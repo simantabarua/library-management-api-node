@@ -13,5 +13,8 @@ const bookSchema = new Schema<IBook>(
   },
   { timestamps: true, versionKey: false }
 );
+bookSchema.methods.updateAvailability = function () {
+  this.available = this.copies > 0;
+};
 
 export const Book = model<IBook>("Book", bookSchema);

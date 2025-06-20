@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Book } from "./bood.model";
+import { Book } from "./book.model";
 import { IBook } from "./book.interface";
 
 export const createBook = async (req: Request, res: Response) => {
@@ -54,15 +54,24 @@ export const getAllBooks = async (req: Request, res: Response) => {
 export const getBookById = async (req: Request, res: Response) => {
   try {
     const book = await Book.findById(req.params.bookId);
-    res.json({
+
+    if (!book) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
       success: true,
-      message: "Books retrieved successfully",
+      message: "Book retrieved successfully",
       data: book,
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      message: "Book Not found",
+      message: "Failed to retrieve book",
       error: err,
     });
   }
