@@ -3,15 +3,15 @@ import { genreList, IBook } from "./book.interface";
 
 const bookSchema = new Schema<IBook>(
   {
-    title: { type: String, require: true },
+    title: { type: String, require: true, trim: true },
     author: { type: String, require: true },
     genre: { type: String, require: true, enum: genreList },
-    isbn: { type: String, require: true },
+    isbn: { type: String, require: true, unique: true },
     description: { type: String },
     copies: { type: Number, require: true, min: 0 },
     available: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 export const Book = model<IBook>("Book", bookSchema);
