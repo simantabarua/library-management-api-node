@@ -1,18 +1,26 @@
 import { z } from "zod";
 import { genreList } from "./book.interface";
+
 export const createBookSchema = z.object({
   body: z.object({
-    title: z.string({ required_error: "Title is required" }),
-    author: z.string({ required_error: "Author is required" }),
-    genre: z.enum(genreList, {
-      errorMap: () => ({ message: "Invalid genre" }),
-    }),
-    isbn: z.string({ required_error: "ISBN is required" }),
+    title: z.string(),
+    author: z.string(),
+    genre: z.enum(genreList),
+    isbn: z.string(),
     description: z.string().optional(),
-    copies: z
-      .number()
-      .int()
-      .nonnegative({ message: "Copies must be 0 or greater" }),
+    copies: z.number().int().nonnegative(),
+    available: z.boolean().optional(),
+  }),
+});
+
+export const updateBookSchema = z.object({
+  body: z.object({
+    title: z.string().optional(),
+    author: z.string().optional(),
+    genre: z.enum(genreList).optional(),
+    isbn: z.string().optional(),
+    description: z.string().optional(),
+    copies: z.number().int().nonnegative().optional(),
     available: z.boolean().optional(),
   }),
 });
