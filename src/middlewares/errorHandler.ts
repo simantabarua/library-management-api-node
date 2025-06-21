@@ -1,17 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 
-export const errorHandler: any = (
+export const errorHandler = (
   err: unknown,
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   if (err instanceof mongoose.Error.ValidationError) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       message: "Validation failed",
       error: err.errors,
     });
+    return;
   }
 
   res.status(500).json({

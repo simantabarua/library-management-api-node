@@ -13,6 +13,7 @@ export const validateRequest = (schema: AnyZodObject): RequestHandler => {
           message: "Validation failed",
           error: err.errors,
         });
+        return;
       }
       next(err);
     }

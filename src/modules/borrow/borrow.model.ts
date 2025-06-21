@@ -1,16 +1,16 @@
-import { model, Schema } from "mongoose";
-import { IBorrow } from "./borrow.interface";
-import { Book } from "../books/book.model";
+import { Schema, model } from "mongoose";
+import { IBorrowDocument } from "./borrow.interface";
+import { addBorrowMiddlewares } from "./borrow.middleware";
 
-const borrowSchema = new Schema<IBorrow>(
+const borrowSchema = new Schema<IBorrowDocument>(
   {
-    book: { type: Schema.Types.ObjectId, ref: Book, required: true },
-    quantity: { type: Number, required: true, min: 1 },
+    book: { type: Schema.Types.ObjectId, ref: "Book", required: true },
+    quantity: { type: Number, required: true },
     dueDate: { type: Date, required: true },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
+  { timestamps: true, versionKey: false }
 );
-export const Borrow = model<IBorrow>("Borrow", borrowSchema);
+
+addBorrowMiddlewares(borrowSchema);
+
+export const Borrow = model<IBorrowDocument>("Borrow", borrowSchema);

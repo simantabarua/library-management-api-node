@@ -7,7 +7,18 @@ export const addBookMiddlewares = (schema: Schema<IBookDocument>) => {
   };
 
   schema.pre("save", function (next) {
-    console.log(`Book "${this.title}" is saved...`);
+    this.updateAvailability();
     next();
+  });
+
+  schema.pre("findOneAndDelete", async function (next) {
+    const book = await this.model.findOne(this.getFilter());
+    if (!book) {
+      return next(new Error("Book not found."));
+    }
+    next();
+  });
+  schema.post("save", function (doc) {
+    console.log(`Book saved successfully.`);
   });
 };
