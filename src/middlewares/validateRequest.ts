@@ -11,7 +11,10 @@ export const validateRequest = (schema: AnyZodObject): RequestHandler => {
         res.status(400).json({
           success: false,
           message: "Validation failed",
-          error: err.errors,
+          error: {
+            name: "ValidationError",
+            issues: err.errors,
+          },
         });
         return;
       }

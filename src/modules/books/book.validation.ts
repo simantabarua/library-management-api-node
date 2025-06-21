@@ -8,7 +8,9 @@ export const createBookSchema = z.object({
     genre: z.enum(genreList, { required_error: "Genre is required" }),
     isbn: z.string({ required_error: "ISBN is required" }),
     description: z.string().optional(),
-    copies: z.number({ required_error: "Copies is required" }).nonnegative("Copies must be 0 or more"),
+    copies: z.number({ required_error: "Copies is required" }).min(0, {
+      message: "Copies must be a positive number",
+    }),
     available: z.boolean().optional(),
   }),
 });
@@ -20,7 +22,12 @@ export const updateBookSchema = z.object({
     genre: z.enum(genreList).optional(),
     isbn: z.string().optional(),
     description: z.string().optional(),
-    copies: z.number().nonnegative("Copies must be 0 or more").optional(),
+    copies: z
+      .number()
+      .min(0, {
+        message: "Copies must be a positive number",
+      })
+      .optional(),
     available: z.boolean().optional(),
   }),
 });
