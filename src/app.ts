@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { errorHandler } from "./middlewares/errorHandler";
 import { bookRoutes } from "./modules/books/book.route";
 import { borrowRoutes } from "./modules/borrow/borrow.route";
+import { errorHandler } from "./middlewares/errorHandler";
 
 export const app = express();
 app.use(cors());

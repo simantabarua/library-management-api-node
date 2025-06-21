@@ -1,20 +1,20 @@
 import { model, Schema } from "mongoose";
-import { genreList, IBook } from "./book.interface";
+import { genreList, IBookDocument } from "./book.interface";
+import { addBookMiddlewares } from "./book.middleware";
 
-const bookSchema = new Schema<IBook>(
+const bookSchema = new Schema<IBookDocument>(
   {
-    title: { type: String, require: true, trim: true },
-    author: { type: String, require: true },
-    genre: { type: String, require: true, enum: genreList },
-    isbn: { type: String, require: true, unique: true },
+    title: { type: String, required: true, trim: true },
+    author: { type: String, required: true },
+    genre: { type: String, required: true, enum: genreList },
+    isbn: { type: String, required: true, unique: true },
     description: { type: String },
-    copies: { type: Number, require: true, min: 0 },
+    copies: { type: Number, required: true, min: 0 },
     available: { type: Boolean, default: true },
   },
   { timestamps: true, versionKey: false }
 );
-bookSchema.methods.updateAvailability = function () {
-  this.available = this.copies > 0;
-};
 
-export const Book = model<IBook>("Book", bookSchema);
+addBookMiddlewares(bookSchema);
+
+export const Book = model<IBookDocument>("Book", bookSchema);

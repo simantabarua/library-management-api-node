@@ -79,19 +79,27 @@ export const getBookById = async (req: Request, res: Response) => {
 
 export const updateBook = async (req: Request, res: Response) => {
   try {
-    console.log(req.params);
     const book = await Book.findByIdAndUpdate(req.params.bookId, req.body, {
       new: true,
     });
+
+    if (!book) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+      return;
+    }
+
     res.json({
       success: true,
-      message: "Books retrieved successfully",
+      message: "Book updated successfully",
       data: book,
     });
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: "Book Not found",
+      message: "Failed to update book",
       error: err,
     });
   }
@@ -99,7 +107,16 @@ export const updateBook = async (req: Request, res: Response) => {
 
 export const deleteBook = async (req: Request, res: Response) => {
   try {
-    await Book.findByIdAndDelete(req.params.bookId);
+    const book = await Book.findByIdAndDelete(req.params.bookId);
+
+    if (!book) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+      return;
+    }
+
     res.json({
       success: true,
       message: "Book deleted successfully",
@@ -108,7 +125,7 @@ export const deleteBook = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: "Book Not found",
+      message: "Failed to delete book",
       error: err,
     });
   }

@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export const genreList = [
   "HISTORY",
@@ -11,7 +11,7 @@ export const genreList = [
 
 export type GenreType = (typeof genreList)[number];
 
-export interface IBook extends Document {
+export interface IBook {
   title: string;
   author: string;
   genre: GenreType;
@@ -19,7 +19,9 @@ export interface IBook extends Document {
   description?: string;
   copies: number;
   available: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  updateAvailability(): void;
+}
+
+export interface IBookDocument extends IBook, Document {
+  _id: Types.ObjectId;
+  updateAvailability: () => void;
 }
