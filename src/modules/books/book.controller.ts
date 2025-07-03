@@ -90,6 +90,12 @@ export const updateBook = async (req: Request, res: Response) => {
       });
       return;
     }
+    Object.assign(book, req.body);
+
+    if ("copies" in req.body) {
+      book.updateAvailability();
+    }
+    await book.save();
 
     res.json({
       success: true,
@@ -130,3 +136,5 @@ export const deleteBook = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getGenres = async () => {};
