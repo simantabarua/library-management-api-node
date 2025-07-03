@@ -19,28 +19,43 @@ export const createBook = async (req: Request, res: Response) => {
     });
   }
 };
-
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
-    // /api/books?filter=FANTASY&sortBy=createdAt&sort=desc&limit=5
     const {
       filter,
       sortBy = "createdAt",
       sort = "desc",
       limit = "10",
+      page = "1",
     } = req.query;
+
     const query: any = {};
     if (filter) query.genre = filter;
-    const books: IBook[] = await Book.find(query)
-      .sort({
-        [sortBy as string]: sort === "desc" ? -1 : 1,
-      })
-      .limit(Number(limit));
+
+    const perPage = Number(limit);
+    const currentPage = Number(page);
+    const skip = (currentPage - 1) * perPage;
+
+    const [books, total] = await Promise.all([
+      Book.find(query)
+        .sort({ [sortBy as string]: sort === "desc" ? -1 : 1 })
+        .skip(skip)
+        .limit(perPage),
+      Book.countDocuments(query),
+    ]);
+
+    const totalPages = Math.ceil(total / perPage);
 
     res.json({
       success: true,
-      message: "Books retrieve successfully",
+      message: "Books retrieved successfully",
       data: books,
+      meta: {
+        total,
+        page: currentPage,
+        limit: perPage,
+        totalPages,
+      },
     });
   } catch (err) {
     res.status(500).json({
