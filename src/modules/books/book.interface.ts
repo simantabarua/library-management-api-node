@@ -7,7 +7,22 @@ export const genreList = [
   "NON_FICTION",
   "SCIENCE",
   "FANTASY",
+  "MYSTERY",
+  "ROMANCE",
+  "THRILLER",
+  "HORROR",
+  "SELF_HELP",
+  "POETRY",
+  "DRAMA",
+  "ADVENTURE",
+  "COMICS",
+  "TECHNOLOGY",
+  "PHILOSOPHY",
+  "RELIGION",
+  "ART",
+  "TRAVEL"
 ] as const;
+
 
 export type GenreType = (typeof genreList)[number];
 

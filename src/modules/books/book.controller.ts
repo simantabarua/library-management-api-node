@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Book } from "./book.model";
-import { IBook } from "./book.interface";
+import { genreList, IBook } from "./book.interface";
 
 export const createBook = async (req: Request, res: Response) => {
   try {
@@ -11,14 +11,24 @@ export const createBook = async (req: Request, res: Response) => {
       message: "Book created successfully",
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern || {})[0];
+      const value = error.keyValue?.[field];
+      res.status(400).json({
+        success: false,
+        message: `A book with the same ${field} (${value}) already exists.`,
+      });
+    }
+
     res.status(400).json({
       success: false,
       message: "Book creation failed",
-      error,
+      error: error.message || error,
     });
   }
 };
+
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
     const {
@@ -152,4 +162,18 @@ export const deleteBook = async (req: Request, res: Response) => {
   }
 };
 
-export const getGenres = async () => {};
+export const getGenres = async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: "Genres retrieved successfully",
+      data: genreList,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve genres",
+      error: err,
+    });
+  }
+};
